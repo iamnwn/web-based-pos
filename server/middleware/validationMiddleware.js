@@ -4,7 +4,7 @@ const validationMiddleware = (schema) => async (req, res, next) => {
     await schema.validate(body, { abortEarly: false });
     next();
   } catch (error) {
-    console.error("Yup validation error:", error.message);
+    console.error("Validation error:", error.message);
     res
       .status(400)
       .json({ error: "Invalid data provided", details: error.errors });

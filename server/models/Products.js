@@ -1,9 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
   const Products = sequelize.define("Products", {
-    product_name: {
+    productName: {
       type: DataTypes.STRING(100),
     },
-    product_details: {
+    productDetails: {
       type: DataTypes.STRING(200),
     },
   });

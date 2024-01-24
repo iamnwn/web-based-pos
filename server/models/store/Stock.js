@@ -13,22 +13,22 @@ module.exports = async (tableName) => {
       unique: true,
       allowNull: false,
     },
-    quantity_in_stock: {
+    quantityInStock: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    bought_price: {
+    boughtPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    unit_price: {
+    unitPrice: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,
     },
-    max_discount: {
+    maxDiscount: {
       type: DataTypes.DECIMAL(5, 2),
     },
-    default_discount: {
+    defaultDiscount: {
       type: DataTypes.DECIMAL(5, 2),
       defaultValue: 0,
     },
@@ -39,7 +39,7 @@ module.exports = async (tableName) => {
   });
 
   await Stock.belongsTo(db.Products, {
-    as: "product",
+    as: "Product",
     onDelete: "RESTRICT",
   });
 

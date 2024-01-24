@@ -7,11 +7,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    postal_code: {
+    postalCode: {
       type: DataTypes.STRING(10),
       allowNull: false,
     },
-    emergency_contact: {
+    emergencyContact: {
       type: DataTypes.STRING(15),
       allowNull: false,
     },
@@ -23,22 +23,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(50),
       allowNull: false,
     },
-    user_role: {
+    userRole: {
       type: DataTypes.ENUM("admin", "manager", "salesmen"),
       defaultValue: "salesmen",
     },
-    user_name: {
+    userName: {
       type: DataTypes.STRING(15),
       allowNull: false,
       unique: true,
     },
-    password_hash: {
+    passwordHash: {
       type: DataTypes.STRING(500),
       allowNull: false,
     },
-    is_active: {
+    isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
+    },
+    refreshToken: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
     },
   });
 

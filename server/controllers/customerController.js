@@ -1,4 +1,5 @@
-const { where } = require("sequelize");
+const { Op } = require("sequelize");
+
 const db = require("../models");
 
 const getAllCustomer = async (req, res) => {
@@ -14,12 +15,11 @@ const createCustomer = async (req, res) => {
   const data = req.body;
   await db.Customer.create(data)
     .then((result) => {
-      res.status(201).json({ message: "Customer created" });
+      res.status(201).json({ message: "Customer created !" });
     })
     .catch((err) => {
       const { errors } = err;
-
-      res.status(403).json({ errors });
+      res.status(403).json(errors);
     });
 };
 
@@ -39,7 +39,7 @@ const updateCustomer = async (req, res) => {
   } catch (error) {
     const { errors } = error;
 
-    res.status(403).json({ errors });
+    res.status(403).json(errors);
   }
 };
 
@@ -75,10 +75,51 @@ const getCustomer = async (req, res) => {
   }
 };
 
+const getCustomersData = async (req, res) => {
+  try {
+    const pageIndex = parseInt(req.query.pageIndex);
+    const pageSize = parseInt(req.query.pageSize);
+    const filterInput = req.query.filter;
+    console.log(req.query);
+    const offset = pageIndex * pageSize;
+
+    const customers = await db.Customer.findAndCountAll({
+      where: {
+        contact: { [Op.like]: `%${filterInput}%` },
+      },
+      limit: 8,
+      offset: offset,
+    });
+
+    // console.log(customers.rows);
+
+    const totalItems = customers.count;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    if (totalItems) {
+      res.send({
+        data: customers.rows,
+        meta: {
+          totalItems,
+          totalPages,
+          currentPage: pageIndex,
+          pageSize,
+        },
+      });
+    } else {
+      res.json({ message: "Not Found" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 module.exports = {
   getAllCustomer,
   createCustomer,
   updateCustomer,
   deleteCustomer,
   getCustomer,
+  getCustomersData,
 };

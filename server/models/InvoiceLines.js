@@ -4,16 +4,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    unit_price: {
-      type: DataTypes.FLOAT,
-    },
     discount: {
       type: DataTypes.FLOAT,
     },
-    sub_total: {
+    subTotal: {
       type: DataTypes.FLOAT,
     },
-    store: {
+    StockId: {
       type: DataTypes.INTEGER,
     },
   });

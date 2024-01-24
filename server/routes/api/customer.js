@@ -12,6 +12,7 @@ router
     customerController.createCustomer
   );
 
+router.route("/data").get(customerController.getCustomersData);
 router
   .route("/:id")
   .get(customerController.getCustomer)

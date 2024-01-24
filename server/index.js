@@ -1,9 +1,24 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const db = require("./models");
+const stock = require("./models/store/Stock");
+const cors = require("cors");
 
 const app = express();
 app.use(bodyParser.json());
+
+app.use(cors());
+
+app.get("/newstore/:name", async (req, res) => {
+  const store = req.params.name;
+  stock(store)
+    .then((e) => {
+      if (e) res.status(201).json({ message: "New store created" });
+    })
+    .catch((e) => {
+      res.status(500).json({ error: "Internal Server Error" });
+    });
+});
 
 //routes---------------------------------------
 app.use("/", require("./routes/root"));

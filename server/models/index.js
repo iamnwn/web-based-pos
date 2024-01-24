@@ -52,7 +52,7 @@ db.Stores.hasMany(db.Invoice);
 db.Invoice.hasMany(db.InvoiceLines);
 db.Products.hasMany(db.InvoiceLines);
 db.ProductsCategory.hasMany(db.Products);
-db.User.hasOne(db.Stores);
+db.Stores.hasOne(db.User);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
