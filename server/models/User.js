@@ -4,12 +4,9 @@ const Customer = require("./Customer");
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define("User", {
     nic: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(15),
       allowNull: false,
-    },
-    postalCode: {
-      type: DataTypes.STRING(10),
-      allowNull: false,
+      unique: true,
     },
     emergencyContact: {
       type: DataTypes.STRING(15),
@@ -21,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     district: {
       type: DataTypes.STRING(50),
+      allowNull: false,
+    },
+    postalCode: {
+      type: DataTypes.STRING(10),
       allowNull: false,
     },
     userRole: {
@@ -42,6 +43,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     refreshToken: {
       type: DataTypes.STRING(500),
+      allowNull: true,
+    },
+    StoreId: {
+      type: DataTypes.STRING(5),
       allowNull: true,
     },
   });

@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 "use client";
-import CustomerForm from "../components/CustomerForm";
+import UserForm from "../components/UserForm";
 
 import {
   Popover,
@@ -29,20 +29,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import customerServices from "@/services/CustomerServices";
-import { useToast } from "./ui/use-toast";
+import UserServices from "@/services/UserService";
 
-export type Customer = {
+export type User = {
   id: number;
+  nic: number;
+  emergencyContact: string;
+  state: string;
+  district: string;
+  postalCode: string;
+  userRole: string;
+  userName: string;
+
+  isActive: string;
+
+  StoreId: number;
+
   firstName: string;
   lastName: string;
   contact: number;
   email: string;
   city: string;
-  createdAt: string;
 };
 
-export const columns: ColumnDef<Customer>[] = [
+export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "firstName",
     header: "First name",
@@ -58,10 +68,22 @@ export const columns: ColumnDef<Customer>[] = [
     ),
   },
   {
+    accessorKey: "nic",
+    header: "NIC no.",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("nic")}</div>,
+  },
+  {
     accessorKey: "contact",
     header: "Contact",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("contact")}</div>
+    ),
+  },
+  {
+    accessorKey: "emergencyContact",
+    header: "Emergency",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("emergencyContact")}</div>
     ),
   },
   {
@@ -72,9 +94,30 @@ export const columns: ColumnDef<Customer>[] = [
     ),
   },
   {
+    accessorKey: "state",
+    header: "State",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("state")}</div>
+    ),
+  },
+  {
+    accessorKey: "district",
+    header: "District",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("district")}</div>
+    ),
+  },
+  {
     accessorKey: "city",
     header: "City",
     cell: ({ row }) => <div className="capitalize">{row.getValue("city")}</div>,
+  },
+  {
+    accessorKey: "postalCode",
+    header: "Postal Code",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("postalCode")}</div>
+    ),
   },
   {
     accessorKey: "createdAt",
@@ -84,6 +127,39 @@ export const columns: ColumnDef<Customer>[] = [
         {new Date(row.getValue("createdAt")).toLocaleDateString()}
       </div>
     ),
+  },
+  {
+    accessorKey: "userRole",
+    header: "User Role",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("userRole")}</div>
+    ),
+  },
+  {
+    accessorKey: "storeName",
+    header: "Store Name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("storeName")}</div>
+    ),
+  },
+  {
+    accessorKey: "isActive",
+    header: "Is Active",
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {row.getValue("isActive") ? "Yes" : "No"}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "userName",
+    header: "User Name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("userName")}</div>
+    ),
+  },
+  {
+    accessorKey: "StoreId",
   },
   {
     accessorKey: "id",
@@ -98,16 +174,14 @@ export const columns: ColumnDef<Customer>[] = [
         <PopoverContent
           align={"end"}
           className="w-auto outline-gray-500 outline-[1px] ">
-          <CustomerForm values={row} />
+          <UserForm values={row} />
         </PopoverContent>
       </Popover>
     ),
   },
 ];
 
-const CustomerTable = () => {
-  const { toast } = useToast();
-
+const UserTable = () => {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -115,8 +189,6 @@ const CustomerTable = () => {
   const [pageIndex, setPageIndex] = React.useState(0);
   const [pageCount, setPageCount] = React.useState(0);
   const [data, setData] = React.useState([]);
-  // const [pageCount, setPageCount] = React.useState();
-  // const { pageSize, pageIndex } = pagination;
 
   const table = useReactTable({
     data,
@@ -136,18 +208,15 @@ const CustomerTable = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    customerServices
-      .getCustomersData(pageIndex, pageSize, filter)
+    UserServices.getUsersData(pageIndex, pageSize, filter)
       .then((data) => {
+        console.log(data);
+
         setData(data.data);
+
         setPageCount(data.meta.totalPages);
       })
-      .catch((err) => {
-        toast({
-          variant: "destructive",
-          description: err.response?.data?.message,
-        });
-      });
+      .catch((err) => {});
   };
 
   React.useEffect(() => {
@@ -157,13 +226,13 @@ const CustomerTable = () => {
   return (
     <div className="w-full">
       <div className="grid gap-5 items-center py-4">
-        <h1 className="text-2xl font-semibold">All customers</h1>
+        <h1 className="text-2xl font-semibold">All users</h1>
         <Input
           typeof="number"
-          placeholder="Filter Contacts..."
-          value={(table.getColumn("contact")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter NIC..."
+          value={(table.getColumn("nic")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
-            table.getColumn("contact")?.setFilterValue(event.target.value);
+            table.getColumn("nic")?.setFilterValue(event.target.value);
             setPageIndex(0);
           }}
           type="number"
@@ -211,7 +280,7 @@ const CustomerTable = () => {
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center">
-                  No customers
+                  No users
                 </TableCell>
               </TableRow>
             )}
@@ -241,4 +310,4 @@ const CustomerTable = () => {
   );
 };
 
-export default CustomerTable;
+export default UserTable;

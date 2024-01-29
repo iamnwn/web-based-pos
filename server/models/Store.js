@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
-  const Stores = sequelize.define("Stores", {
+  const Store = sequelize.define("Store", {
+    id: {
+      type: DataTypes.STRING(5),
+      allowNull: false,
+      primaryKey: true,
+    },
     storeLocation: {
       type: DataTypes.STRING(50),
       allowNull: false,
@@ -9,5 +14,5 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     },
   });
-  return Stores;
+  return Store;
 };

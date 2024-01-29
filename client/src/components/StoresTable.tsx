@@ -1,6 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
 "use client";
-import CustomerForm from "../components/CustomerForm";
 
 import {
   Popover,
@@ -29,62 +28,43 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import customerServices from "@/services/CustomerServices";
-import { useToast } from "./ui/use-toast";
+import StoreForm from "./StoresForm";
+import StoresService from "@/services/StoresServise";
 
-export type Customer = {
-  id: number;
+export type User = {
+  storeName: string;
+  storeLocation: string;
   firstName: string;
-  lastName: string;
-  contact: number;
-  email: string;
-  city: string;
-  createdAt: string;
 };
 
-export const columns: ColumnDef<Customer>[] = [
+export const columns: ColumnDef<User>[] = [
+  {
+    accessorKey: "storeName",
+    header: "First name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("storeName")}</div>
+    ),
+  },
+  {
+    accessorKey: "storeLocation",
+    header: "Last name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("storeLocation")}</div>
+    ),
+  },
   {
     accessorKey: "firstName",
-    header: "First name",
+    header: "Manager",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("firstName")}</div>
     ),
   },
   {
-    accessorKey: "lastName",
-    header: "Last name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("lastName")}</div>
-    ),
+    accessorKey: "nic",
+    header: "Manager NIC",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("nic")}</div>,
   },
-  {
-    accessorKey: "contact",
-    header: "Contact",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("contact")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("email")}</div>
-    ),
-  },
-  {
-    accessorKey: "city",
-    header: "City",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("city")}</div>,
-  },
-  {
-    accessorKey: "createdAt",
-    header: "Reg. Date",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {new Date(row.getValue("createdAt")).toLocaleDateString()}
-      </div>
-    ),
-  },
+
   {
     accessorKey: "id",
     header: "Actions",
@@ -98,16 +78,14 @@ export const columns: ColumnDef<Customer>[] = [
         <PopoverContent
           align={"end"}
           className="w-auto outline-gray-500 outline-[1px] ">
-          <CustomerForm values={row} />
+          <StoreForm values={row} />
         </PopoverContent>
       </Popover>
     ),
   },
 ];
 
-const CustomerTable = () => {
-  const { toast } = useToast();
-
+const StoreTable = () => {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -115,8 +93,6 @@ const CustomerTable = () => {
   const [pageIndex, setPageIndex] = React.useState(0);
   const [pageCount, setPageCount] = React.useState(0);
   const [data, setData] = React.useState([]);
-  // const [pageCount, setPageCount] = React.useState();
-  // const { pageSize, pageIndex } = pagination;
 
   const table = useReactTable({
     data,
@@ -132,22 +108,19 @@ const CustomerTable = () => {
   });
 
   const pageSize: number = 8;
-  const filter: string = columnFilters[0]?.value;
+  const filter: string = "";
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    customerServices
-      .getCustomersData(pageIndex, pageSize, filter)
+    StoresService.getStoresData(pageIndex, pageSize, filter)
       .then((data) => {
+        console.log(data);
+
         setData(data.data);
+
         setPageCount(data.meta.totalPages);
       })
-      .catch((err) => {
-        toast({
-          variant: "destructive",
-          description: err.response?.data?.message,
-        });
-      });
+      .catch((err) => {});
   };
 
   React.useEffect(() => {
@@ -157,18 +130,7 @@ const CustomerTable = () => {
   return (
     <div className="w-full">
       <div className="grid gap-5 items-center py-4">
-        <h1 className="text-2xl font-semibold">All customers</h1>
-        <Input
-          typeof="number"
-          placeholder="Filter Contacts..."
-          value={(table.getColumn("contact")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("contact")?.setFilterValue(event.target.value);
-            setPageIndex(0);
-          }}
-          type="number"
-          className="w-[250px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-        />
+        <h1 className="text-2xl font-semibold">All stores</h1>
       </div>
       <div className="rounded-sm border w-auto">
         <Table>
@@ -211,7 +173,7 @@ const CustomerTable = () => {
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center">
-                  No customers
+                  No stores
                 </TableCell>
               </TableRow>
             )}
@@ -241,4 +203,4 @@ const CustomerTable = () => {
   );
 };
 
-export default CustomerTable;
+export default StoreTable;

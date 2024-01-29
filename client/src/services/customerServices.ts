@@ -23,13 +23,9 @@ const customerServices = {
   },
 
   getCustomerById: async (customerId: number): Promise<Customer | null> => {
-    try {
-      const response = await axios.get(`${CUSTOMER_URL}/${customerId}`);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching customer with ID ${customerId}:`, error);
-      throw error;
-    }
+    const response = await axios.get(`${CUSTOMER_URL}/${customerId}`);
+    //
+    return response.data;
   },
 
   getCustomersData: async (

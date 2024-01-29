@@ -13,7 +13,7 @@ router
     passwordHash,
     userController.createUser
   );
-
+router.route("/data").get(userController.getUsersData);
 router
   .route("/:id")
   .get(userController.getUser)

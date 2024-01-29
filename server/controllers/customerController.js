@@ -80,18 +80,17 @@ const getCustomersData = async (req, res) => {
     const pageIndex = parseInt(req.query.pageIndex);
     const pageSize = parseInt(req.query.pageSize);
     const filterInput = req.query.filter;
-    console.log(req.query);
     const offset = pageIndex * pageSize;
 
     const customers = await db.Customer.findAndCountAll({
       where: {
         contact: { [Op.like]: `%${filterInput}%` },
       },
-      limit: 8,
+      limit: pageSize,
       offset: offset,
     });
 
-    // console.log(customers.rows);
+    //
 
     const totalItems = customers.count;
     const totalPages = Math.ceil(totalItems / pageSize);
@@ -107,10 +106,9 @@ const getCustomersData = async (req, res) => {
         },
       });
     } else {
-      res.json({ message: "Not Found" });
+      res.status(404).json({ message: "Not Found" });
     }
   } catch (error) {
-    console.log(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

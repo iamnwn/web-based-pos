@@ -19,7 +19,7 @@ const Customers = () => {
         <PopoverContent
           align={"start"}
           className="w-auto outline-gray-500 outline-[1px] ">
-          <CustomerForm />
+          <CustomerForm values={null} />
         </PopoverContent>
       </Popover>
 

@@ -5,6 +5,7 @@ const path = require("path");
 const Sequelize = require("sequelize");
 var basename = path.basename(__filename);
 const process = require("process");
+// const User = require("./User");
 // const Customer = require("./Customer");
 // const User = require("./User");
 
@@ -46,13 +47,28 @@ Object.keys(db).forEach((modelName) => {
 });
 
 db.Customer.hasOne(db.User);
+db.User.belongsTo(db.Customer);
+
 db.Customer.hasMany(db.Invoice);
+db.Invoice.belongsTo(db.Customer);
+
 db.User.hasMany(db.Invoice);
-db.Stores.hasMany(db.Invoice);
+db.Invoice.belongsTo(db.User);
+
+db.Store.hasMany(db.Invoice);
+db.Invoice.belongsTo(db.Store);
+
 db.Invoice.hasMany(db.InvoiceLines);
+db.InvoiceLines.belongsTo(db.Invoice);
+
 db.Products.hasMany(db.InvoiceLines);
+db.InvoiceLines.belongsTo(db.Products);
+
 db.ProductsCategory.hasMany(db.Products);
-db.Stores.hasOne(db.User);
+db.Products.belongsTo(db.ProductsCategory);
+
+db.Store.hasOne(db.User);
+db.User.belongsTo(db.Store);
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;

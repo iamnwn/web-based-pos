@@ -11,11 +11,11 @@ module.exports = async (tableName) => {
     barcode: {
       type: DataTypes.STRING(30),
       unique: true,
-      allowNull: false,
+      allowNull: true,
     },
     quantityInStock: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
     },
     boughtPrice: {
       type: DataTypes.DECIMAL(10, 2),
@@ -38,10 +38,14 @@ module.exports = async (tableName) => {
     },
   });
 
-  await Stock.belongsTo(db.Products, {
-    as: "Product",
-    onDelete: "RESTRICT",
+  await db.Products.hasOne(Stock);
+  await Stock.belongsTo(db.Products);
+
+  await Stock.hasMany(db.InvoiceLines, {
+    as: "StockId",
+    foreignKey: "id",
   });
+  await db.InvoiceLines.belongsTo(Stock);
 
   await sequelize.sync();
   return Stock;
