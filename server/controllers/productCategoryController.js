@@ -1,4 +1,5 @@
 const db = require("../models");
+const { Op } = require("sequelize");
 
 const createProductCategory = async (req, res) => {
   const data = req.body;
@@ -14,13 +15,14 @@ const createProductCategory = async (req, res) => {
 };
 
 const getProductCategories = async (req, res) => {
+  console.log(req.query);
   try {
     const pageIndex = parseInt(req.query.pageIndex);
     const pageSize = parseInt(req.query.pageSize);
     const filterInput = req.query.filter;
     const offset = pageIndex * pageSize;
 
-    const productCategories = await db.Product.findAndCountAll({
+    const productCategories = await db.ProductsCategory.findAndCountAll({
       where: {
         categoryName: { [Op.like]: `%${filterInput}%` },
       },

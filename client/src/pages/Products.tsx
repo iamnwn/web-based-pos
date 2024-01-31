@@ -24,7 +24,7 @@ const Products = () => {
       <Popover>
         <PopoverTrigger asChild>
           <Button className="ml-10 outline outline-gray-500 outline-[1px]">
-            Add Category +
+            Add Product +
           </Button>
         </PopoverTrigger>
         <PopoverContent

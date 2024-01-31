@@ -5,8 +5,9 @@ import { Button } from "./ui/button";
 import { FieldValues, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useToast } from "@/components/ui/use-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CreateSchema } from "@/schema/CustomerSchema";
+import CategoryComBox from "./CategoryComBox";
 
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
@@ -25,15 +26,23 @@ const ProductForm = ({ values }) => {
       // resolver: yupResolver(CreateSchema),
     });
   const { errors, isSubmitting } = formState;
+  const [category, setCategory] = useState({
+    id: "",
+    categoryName: "",
+  });
 
   useEffect(() => {
     if (values) {
       setValue("id", values.getValue("id"));
       setValue("productName", values.getValue("productName"));
       setValue("productDetails", values.getValue("productDetails"));
-      setValue("ProductCategoryId", values.getValue("ProductCategoryId"));
+      setValue("ProductsCategoryId", values.getValue("ProductsCategoryId"));
     }
   }, []);
+
+  useEffect(() => {
+    setValue("ProductsCategoryId", category.id);
+  }, [category]);
 
   const { toast } = useToast();
 
@@ -99,10 +108,15 @@ const ProductForm = ({ values }) => {
           </div>
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="productDetails">Product details</Label>
-            <textarea {...register("productDetails")} placeholder="Fruit" />
+            <Input {...register("productDetails")} placeholder="Fruit" />
             <p className="text-destructive text-xs">
               {errors.productDetails?.message}
             </p>
+          </div>
+          <div className="flex flex-col space-y-2 ">
+            <Label htmlFor="category">Category</Label>
+            <CategoryComBox setCategory={setCategory} />
+            <p className="text-destructive text-xs"></p>
           </div>
 
           <div className="grid content-center ">
