@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { InvoiceContext } from "@/contexts/InvoiceProvider";
 
-export function useInvoice() {
+export default function useInvoice() {
   return useContext(InvoiceContext);
 }

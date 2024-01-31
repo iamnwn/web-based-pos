@@ -28,8 +28,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import StoreForm from "./StoresForm";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
+import useInvoice from "@/hooks/useInvoice";
 export type User = {
   storeName: string;
   storeLocation: string;
@@ -101,23 +101,18 @@ export const columns: ColumnDef<User>[] = [
     accessorKey: "id",
     header: "Actions",
     cell: ({ row }) => (
-      <Popover>
-        <PopoverTrigger asChild className="w-[100px]">
-          <Button className="outline outline-gray-500 outline-[1px]">
-            Add
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          align={"end"}
-          className="w-auto outline-gray-500 outline-[1px] ">
-          <StoreForm values={row} />
-        </PopoverContent>
-      </Popover>
+      <Button
+        onClick={increase}
+        className="outline outline-gray-500 outline-[1px]">
+        Add
+      </Button>
     ),
   },
 ];
 
 const SalesTable = () => {
+  const { increaseInvoiceQuantity } = useInvoice();
+
   const axiosPrivate = useAxiosPrivate();
   const STOCK_URL = "/api/stock";
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

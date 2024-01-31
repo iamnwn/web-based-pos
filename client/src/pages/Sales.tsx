@@ -4,6 +4,7 @@ import { useState } from "react";
 import CustomerComBox from "@/components/CustomerCombox";
 import { Label } from "@/components/ui/label";
 import { InvoiceProvider } from "@/contexts/InvoiceProvider";
+import SubmitInvoice from "@/components/SubmitInvoice";
 
 const Sales = () => {
   const [customer, setCustomer] = useState({
@@ -25,6 +26,7 @@ const Sales = () => {
         </div>
         <div className="ml-5">
           <SalesInvoice></SalesInvoice>
+          <SubmitInvoice></SubmitInvoice>
         </div>
       </div>
     </InvoiceProvider>

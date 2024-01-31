@@ -1,5 +1,4 @@
-import useLocalStorage from "@/hooks/useLocalStorage";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 
 type ShoppingCartProviderProps = {
   children: ReactNode;
@@ -21,16 +20,13 @@ type InvoiceContext = {
   removeFromInvoice: (StockId: number) => void;
   getTotalInvoiceAmount: () => number;
   invoiceQuantity: number;
-  invoiceItems: InvoiceItems[];
+  invoiceItems: InvoiceItem[];
 };
 
 export const InvoiceContext = createContext({} as InvoiceContext);
 
 export function InvoiceProvider({ children }: ShoppingCartProviderProps) {
-  const [invoiceItems, setInvoiceItems] = useLocalStorage<InvoiceItems[]>(
-    "invoice-item",
-    []
-  );
+  const [invoiceItems, setInvoiceItems] = useState({});
 
   const getTotalInvoiceAmount = () => {
     const totalAmount = invoiceItems.reduce((acc, item) => {
