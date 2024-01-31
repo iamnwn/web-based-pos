@@ -18,6 +18,7 @@ const createCustomer = async (req, res) => {
       res.status(201).json({ message: "Customer created !" });
     })
     .catch((err) => {
+      console.log(err);
       const { errors } = err;
       res.status(403).json(errors);
     });

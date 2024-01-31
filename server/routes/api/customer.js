@@ -3,6 +3,7 @@ const router = express.Router();
 const customerController = require("../../controllers/customerController");
 const validationMiddleware = require("../../middleware/validationMiddleware");
 const customerValidation = require("../../validations/customerValidation");
+const verifyRoles = require("../../middleware/verifyRoles");
 
 router
   .route("/")
@@ -12,7 +13,12 @@ router
     customerController.createCustomer
   );
 
-router.route("/data").get(customerController.getCustomersData);
+router
+  .route("/data")
+  .get(
+    verifyRoles(["admin", "manager", "salesmen"]),
+    customerController.getCustomersData
+  );
 router
   .route("/:id")
   .get(customerController.getCustomer)

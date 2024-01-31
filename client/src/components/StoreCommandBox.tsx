@@ -6,18 +6,24 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import StoresService from "@/services/StoresServise";
-
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import { useEffect, useState } from "react";
 
 const CustomerCommandBox = ({ setOpen, setSelected }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const STORES_URL = "/api/stores";
   const [filter, setFilter] = useState("");
   const [stores, setStores] = useState();
 
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    StoresService.getStoresData(pageIndex, pageSize, filter)
+    axiosPrivate
+      .get(
+        `${STORES_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+          !filter ? "" : filter
+        }`
+      )
       .then((data) => {
-        setStores(data.data);
+        setStores(data.data.data);
         //
       })
       .catch((err) => {});

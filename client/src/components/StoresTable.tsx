@@ -29,8 +29,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import StoreForm from "./StoresForm";
-import StoresService from "@/services/StoresServise";
-
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 export type User = {
   storeName: string;
   storeLocation: string;
@@ -86,6 +85,8 @@ export const columns: ColumnDef<User>[] = [
 ];
 
 const StoreTable = () => {
+  const axiosPrivate = useAxiosPrivate();
+  const STORES_URL = "/api/stores";
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -111,14 +112,23 @@ const StoreTable = () => {
   const filter: string = "";
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    StoresService.getStoresData(pageIndex, pageSize, filter)
+  const fetchData = async (
+    pageIndex: number,
+    pageSize: number,
+    filter: string
+  ) => {
+    await axiosPrivate
+      .get(
+        `${STORES_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+          !filter ? "" : filter
+        }`
+      )
       .then((data) => {
         console.log(data);
 
-        setData(data.data);
+        setData(data.data.data);
 
-        setPageCount(data.meta.totalPages);
+        setPageCount(data.data.meta.totalPages);
       })
       .catch((err) => {});
   };

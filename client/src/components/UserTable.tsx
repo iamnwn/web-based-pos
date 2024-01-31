@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 "use client";
 import UserForm from "../components/UserForm";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 import {
   Popover,
@@ -182,6 +183,8 @@ export const columns: ColumnDef<User>[] = [
 ];
 
 const UserTable = () => {
+  const USER_URL = "/api/user";
+  const axiosPrivate = useAxiosPrivate();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -208,13 +211,18 @@ const UserTable = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    UserServices.getUsersData(pageIndex, pageSize, filter)
+    axiosPrivate
+      .get(
+        `${USER_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+          !filter ? "" : filter
+        }`
+      )
       .then((data) => {
         console.log(data);
 
-        setData(data.data);
+        setData(data.data.data);
 
-        setPageCount(data.meta.totalPages);
+        setPageCount(data.data.meta.totalPages);
       })
       .catch((err) => {});
   };

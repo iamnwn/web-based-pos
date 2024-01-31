@@ -29,8 +29,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import customerServices from "@/services/CustomerServices";
 import { useToast } from "./ui/use-toast";
+
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 export type Customer = {
   id: number;
@@ -107,6 +108,8 @@ export const columns: ColumnDef<Customer>[] = [
 
 const CustomerTable = () => {
   const { toast } = useToast();
+  const CUSTOMER_URL = "/api/customer";
+  const axiosPrivate = useAxiosPrivate();
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -136,11 +139,17 @@ const CustomerTable = () => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    customerServices
-      .getCustomersData(pageIndex, pageSize, filter)
+    axiosPrivate
+      .get(
+        `${CUSTOMER_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+          !filter ? "" : filter
+        }`
+      )
       .then((data) => {
-        setData(data.data);
-        setPageCount(data.meta.totalPages);
+        console.log(data.data.data);
+
+        setData(data.data.data);
+        setPageCount(data.data.meta?.totalPages);
       })
       .catch((err) => {
         toast({

@@ -8,8 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AxiosResponse, AxiosError } from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
-import StoresService from "@/services/StoresServise";
-
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 import * as Yup from "yup";
 
 const schema = Yup.object().shape({
@@ -23,6 +22,8 @@ type formType = {
 };
 
 const StoreForm = ({ values }) => {
+  const axiosPrivate = useAxiosPrivate();
+  const STORES_URL = "/api/stores";
   const { register, handleSubmit, setValue, formState } = useForm<formType>({
     resolver: yupResolver(schema),
   });
@@ -43,12 +44,13 @@ const StoreForm = ({ values }) => {
 
     if (values) {
       const id = values.getValue("id");
-      await StoresService.updateStore(id, data)
+      await axiosPrivate
+        .put(`${STORES_URL}/${id}`, data)
         .then((response: AxiosResponse) => {
           toast({
             variant: "success",
             title: "Success",
-            description: response?.message,
+            description: response?.data.message,
           });
         })
         .catch((reason: AxiosError) => {
@@ -69,12 +71,13 @@ const StoreForm = ({ values }) => {
           }
         });
     } else {
-      StoresService.createStore(data)
+      await axiosPrivate
+        .post(STORES_URL, data)
         .then((response: AxiosResponse) => {
           toast({
             variant: "success",
             title: "Success",
-            description: response?.message,
+            description: response?.data.message,
           });
         })
         .catch((reason: AxiosError) => {

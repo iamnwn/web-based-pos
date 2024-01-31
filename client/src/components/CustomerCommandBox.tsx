@@ -6,19 +6,25 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import customerServices from "@/services/CustomerServices";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 import { useEffect, useState } from "react";
 
 const CustomerCommandBox = ({ setOpen, setSelected }) => {
+  const CUSTOMER_URL = "/api/customer";
+  const axiosPrivate = useAxiosPrivate();
   const [filter, setFilter] = useState("");
   const [users, setUsers] = useState();
 
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    customerServices
-      .getCustomersData(pageIndex, pageSize, filter)
+    axiosPrivate
+      .get(
+        `${CUSTOMER_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+          !filter ? "" : filter
+        }`
+      )
       .then((data) => {
-        setUsers(data.data);
+        setUsers(data.data.data);
         //
       })
       .catch((err) => {});

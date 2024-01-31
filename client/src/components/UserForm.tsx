@@ -17,9 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import CustomerComBox from "./CustomerCombox";
-import UserService from "@/services/userService";
 import { CreateSchema, UpdateSchema } from "@/schema/UserSchema";
 import StoreComBox from "./StoreComBox";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 type formType = {
   id: number;
@@ -37,6 +37,8 @@ type formType = {
 };
 
 const UserForm = ({ values }) => {
+  const CUSTOMER_URL = "/api/user";
+  const axiosPrivate = useAxiosPrivate();
   let schema;
   const [customer, setCustomer] = useState({
     id: "",
@@ -91,7 +93,8 @@ const UserForm = ({ values }) => {
 
     if (values) {
       const id = values.getValue("id");
-      await UserService.updateUser(id, data)
+      axiosPrivate
+        .put(`${CUSTOMER_URL}/${id}`, data)
         .then((response: AxiosResponse) => {
           toast({
             variant: "success",
@@ -119,7 +122,8 @@ const UserForm = ({ values }) => {
           }
         });
     } else {
-      UserService.createUser(data)
+      axiosPrivate
+        .put(`${CUSTOMER_URL}`, data)
         .then((response: AxiosResponse) => {
           toast({
             variant: "success",

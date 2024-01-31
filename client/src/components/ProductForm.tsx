@@ -7,32 +7,31 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect } from "react";
 import { CreateSchema } from "@/schema/CustomerSchema";
+
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
 
 type formType = {
-  firstName: string;
-  lastName: string;
-  contact: number | string;
-  email: string;
-  city: string;
+  id: number;
+  productName: string;
+  productDetails: string;
+  ProductCategoryId: string;
 };
 
-const CustomerForm = ({ values }) => {
-  const CUSTOMER_URL = "/api/customer";
+const ProductForm = ({ values }) => {
   const axiosPrivate = useAxiosPrivate();
+  const PRODUCT_URL = "/api/product";
   const { register, handleSubmit, setValue, formState, reset } =
     useForm<formType>({
-      resolver: yupResolver(CreateSchema),
+      // resolver: yupResolver(CreateSchema),
     });
   const { errors, isSubmitting } = formState;
 
   useEffect(() => {
     if (values) {
-      setValue("firstName", values.getValue("firstName"));
-      setValue("lastName", values.getValue("lastName"));
-      setValue("contact", values.getValue("contact"));
-      setValue("email", values.getValue("email"));
-      setValue("city", values.getValue("city"));
+      setValue("id", values.getValue("id"));
+      setValue("productName", values.getValue("productName"));
+      setValue("productDetails", values.getValue("productDetails"));
+      setValue("ProductCategoryId", values.getValue("ProductCategoryId"));
     }
   }, []);
 
@@ -42,12 +41,12 @@ const CustomerForm = ({ values }) => {
     if (values) {
       const id = values.getValue("id");
       await axiosPrivate
-        .put(`${CUSTOMER_URL}/${id}`, data)
+        .put(`${PRODUCT_URL}/${id}`, data)
         .then((e) => {
           toast({
             variant: "success",
             title: "Success",
-            description: e.message,
+            description: e.data.message,
           });
           reset();
         })
@@ -63,8 +62,8 @@ const CustomerForm = ({ values }) => {
           }
         });
     } else {
-      axiosPrivate
-        .post(CUSTOMER_URL, data)
+      await axiosPrivate
+        .post(PRODUCT_URL, data)
         .then((e) => {
           toast({
             variant: "success",
@@ -92,55 +91,18 @@ const CustomerForm = ({ values }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-3 w-full place-content-stretch gap-4">
           <div className="flex flex-col space-y-2">
-            <Label htmlFor="firstName">First name</Label>
-            <Input
-              {...register("firstName")}
-              placeholder="Nuwan"
-              // defaultValue={id ? id.getValue("firstName") : ""}
-            />
+            <Label htmlFor="productName">Product name</Label>
+            <Input {...register("productName")} placeholder="Banana" />
             <p className="text-destructive text-xs">
-              {errors.firstName?.message}
+              {errors.productName?.message}
             </p>
           </div>
           <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="lastName">Last name</Label>
-            <Input
-              {...register("lastName")}
-              placeholder="Thilakarathna"
-              // defaultValue={id ? customer?.lastName : ""}
-            />
+            <Label htmlFor="productDetails">Product details</Label>
+            <textarea {...register("productDetails")} placeholder="Fruit" />
             <p className="text-destructive text-xs">
-              {errors.lastName?.message}
+              {errors.productDetails?.message}
             </p>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="contact">Contact</Label>
-            <Input
-              {...register("contact")}
-              placeholder="0767799707"
-              // defaultValue={id ? customer?.contact : ""}
-            />
-            <p className="w-full text-destructive text-xs">
-              {errors.contact?.message}
-            </p>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              {...register("email")}
-              placeholder="tinuwan@gmail.com"
-              // defaultValue={id ? customer?.email : ""}
-            />
-            <p className="text-destructive text-xs">{errors.email?.message}</p>
-          </div>
-          <div className="flex flex-col space-y-1.5">
-            <Label htmlFor="city">City</Label>
-            <Input
-              {...register("city")}
-              placeholder="Godakawela"
-              // defaultValue={id ? customer?.city : ""}
-            />
-            <p className="text-destructive text-xs">{errors.city?.message}</p>
           </div>
 
           <div className="grid content-center ">
@@ -157,4 +119,4 @@ const CustomerForm = ({ values }) => {
   );
 };
 
-export default CustomerForm;
+export default ProductForm;
