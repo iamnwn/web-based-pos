@@ -7,17 +7,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import CategoryCommandBox from "./CategoryCommandBox";
+import ProductCommandBox from "./ProductCommandBox";
 
-const CategoryComBox = ({ setCategory }) => {
+const ProductComBox = ({ setProduct }) => {
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState();
 
   React.useEffect(() => {
-    console.log(selected);
-
     if (selected) {
-      setCategory({ id: selected.id, categoryName: selected.categoryName });
+      setProduct({ id: selected.id, productName: selected.productName });
     }
   }, [selected]);
 
@@ -29,10 +27,10 @@ const CategoryComBox = ({ setCategory }) => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
-        <CategoryCommandBox setOpen={setOpen} setSelected={setSelected} />
+        <ProductCommandBox setOpen={setOpen} setSelected={setSelected} />
       </PopoverContent>
     </Popover>
   );
 };
 
-export default CategoryComBox;
+export default ProductComBox;

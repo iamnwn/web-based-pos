@@ -1,4 +1,5 @@
 const db = require("../models");
+const { Op } = require("sequelize");
 
 const createProduct = async (req, res) => {
   const data = req.body;
@@ -20,22 +21,35 @@ const getProductData = async (req, res) => {
     const filterInput = req.query.filter;
     const offset = pageIndex * pageSize;
 
-    const productCategories = await db.Products.findAndCountAll({
+    const products = await db.Products.findAndCountAll({
       where: {
-        categoryName: { [Op.like]: `%${filterInput}%` },
+        productName: { [Op.like]: `%${filterInput}%` },
       },
+      attributes: [
+        "id",
+        "productName",
+        "productDetails",
+        "ProductsCategoryId",
+        "ProductsCategory.categoryName",
+      ],
+      include: {
+        model: db.ProductsCategory,
+        attributes: [],
+      },
+      raw: true,
       limit: pageSize,
       offset: offset,
     });
 
     //
 
-    const totalItems = productCategories.count;
+    const totalItems = products.count;
     const totalPages = Math.ceil(totalItems / pageSize);
 
     if (totalItems) {
+      console.log(products.rows);
       res.send({
-        data: productCategories.rows,
+        data: products.rows,
         meta: {
           totalItems,
           totalPages,
@@ -61,11 +75,12 @@ const updateProduct = async (req, res) => {
     });
 
     if (rowsAffected === 0) {
-      return res.status(404).json({ error: "Store not found" });
+      return res.status(404).json({ error: "Product not found" });
     }
 
-    res.status(200).json({ message: "Store updated" });
+    res.status(200).json({ message: "Product updated" });
   } catch (error) {
+    console.log(error);
     const { errors } = error;
 
     res.status(403).json(errors);

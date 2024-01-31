@@ -28,41 +28,75 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import StoreForm from "./StoresForm";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import ProductForm from "./ProductForm";
-
-export type Product = {
-  productName: string;
-  productDetails: string;
-  categoryName: string;
+export type User = {
+  storeName: string;
+  storeLocation: string;
+  firstName: string;
 };
 
 export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "productName",
-    header: "Product name",
+    header: "Product Name",
     cell: ({ row }) => (
       <div className="capitalize">{row.getValue("productName")}</div>
     ),
   },
   {
-    accessorKey: "productDetails",
-    header: "Product details",
+    accessorKey: "batch",
+    header: "Batch No",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productDetails")}</div>
+      <div className="capitalize">{row.getValue("batch")}</div>
     ),
   },
   {
-    accessorKey: "categoryName",
-    header: "Category",
+    accessorKey: "barcode",
+    header: "Barcode",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoryName")}</div>
+      <div className="capitalize">{row.getValue("barcode")}</div>
+    ),
+  },
+  {
+    accessorKey: "quantityInStock",
+    header: "QTY",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("quantityInStock")}</div>
+    ),
+  },
+  {
+    accessorKey: "unitPrice",
+    header: "Unit Price",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("unitPrice")}</div>
+    ),
+  },
+  {
+    accessorKey: "maxDiscount",
+    header: "MAX %",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("maxDiscount")}</div>
+    ),
+  },
+  {
+    accessorKey: "defaultDiscount",
+    header: "Default %",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("defaultDiscount")}</div>
+    ),
+  },
+  {
+    accessorKey: "available",
+    header: "Availability",
+    cell: ({ row }) => (
+      <div className="available">
+        {" "}
+        {row.getValue("available") ? "Yes" : "No"}
+      </div>
     ),
   },
 
-  {
-    accessorKey: "ProductsCategoryId",
-  },
   {
     accessorKey: "id",
     header: "Actions",
@@ -70,22 +104,22 @@ export const columns: ColumnDef<User>[] = [
       <Popover>
         <PopoverTrigger asChild className="w-[100px]">
           <Button className="outline outline-gray-500 outline-[1px]">
-            Update
+            Add
           </Button>
         </PopoverTrigger>
         <PopoverContent
           align={"end"}
           className="w-auto outline-gray-500 outline-[1px] ">
-          <ProductForm values={row} />
+          <StoreForm values={row} />
         </PopoverContent>
       </Popover>
     ),
   },
 ];
 
-const ProductTable = () => {
-  const PRODUCT_URL = "/api/product";
+const SalesTable = () => {
   const axiosPrivate = useAxiosPrivate();
+  const STOCK_URL = "/api/stock";
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -108,13 +142,17 @@ const ProductTable = () => {
   });
 
   const pageSize: number = 8;
-  const filter: string = columnFilters[0]?.value;
+  const filter: string = "";
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
-    axiosPrivate
+  const fetchData = async (
+    pageIndex: number,
+    pageSize: number,
+    filter: string
+  ) => {
+    await axiosPrivate
       .get(
-        `${PRODUCT_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+        `${STOCK_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
           !filter ? "" : filter
         }`
       )
@@ -135,9 +173,8 @@ const ProductTable = () => {
   return (
     <div className="w-full">
       <div className="grid gap-5 items-center py-4">
-        <h1 className="text-2xl font-semibold">All users</h1>
         <Input
-          placeholder="Filter product..."
+          placeholder="Filter Product..."
           value={
             (table.getColumn("productName")?.getFilterValue() as string) ?? ""
           }
@@ -219,4 +256,4 @@ const ProductTable = () => {
   );
 };
 
-export default ProductTable;
+export default SalesTable;

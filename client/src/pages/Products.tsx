@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/popover";
 import ProductCategoryForm from "@/components/ProductCategoryForm";
 import ProductForm from "@/components/ProductForm";
+import ProductTable from "@/components/ProductsTable";
 const Products = () => {
   return (
     <div className="flex-cols m-5 ">
@@ -33,6 +34,8 @@ const Products = () => {
           <ProductForm values={null} />
         </PopoverContent>
       </Popover>
+
+      <ProductTable />
     </div>
   );
 };

@@ -60,6 +60,7 @@ const ProductForm = ({ values }) => {
           reset();
         })
         .catch((err) => {
+          console.log(err);
           if (err.response) {
             const validationErrors = err.response.data;
             const message = validationErrors[0].message;
@@ -118,6 +119,7 @@ const ProductForm = ({ values }) => {
             <CategoryComBox setCategory={setCategory} />
             <p className="text-destructive text-xs"></p>
           </div>
+          <p>Category: {category ? category.categoryName : null}</p>
 
           <div className="grid content-center ">
             <Button

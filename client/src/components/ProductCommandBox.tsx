@@ -7,37 +7,30 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-
 import { useEffect, useState } from "react";
 
-const CustomerCommandBox = ({ setOpen, setSelected }) => {
-  const CUSTOMER_URL = "/api/customer";
+const ProductCommandBox = ({ setOpen, setSelected }) => {
   const axiosPrivate = useAxiosPrivate();
+  const PRODUCT_URL = "/api/product";
   const [filter, setFilter] = useState("");
-  const [users, setUsers] = useState();
+  const [products, setProducts] = useState();
 
-  const fetchData = async (
-    pageIndex: number,
-    pageSize: number,
-    filter: string
-  ) => {
-    await axiosPrivate
+  const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
+    axiosPrivate
       .get(
-        `${CUSTOMER_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+        `${PRODUCT_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
           !filter ? "" : filter
         }`
       )
       .then((data) => {
-        console.log(data);
-        setUsers(data.data.data);
-
+        setProducts(data.data.data);
         //
       })
       .catch((err) => {});
   };
 
   useEffect(() => {
-    fetchData(0, 10, filter);
+    fetchData(0, 5, filter);
   }, [filter]);
 
   return (
@@ -46,21 +39,20 @@ const CustomerCommandBox = ({ setOpen, setSelected }) => {
         onChangeCapture={(e) => setFilter(e.target.value)}
         placeholder="Contact"
       />
-      <CommandList>
+      <CommandList key={products}>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
-          {users ? (
-            users.map((user) => (
+          {products ? (
+            products.map((product) => (
               <CommandItem
                 className="bg-background"
-                key={user.id}
-                value={user}
+                key={product.id}
+                value={product}
                 onSelect={() => {
-                  setSelected(user);
+                  setSelected(product);
                   setOpen(false);
                 }}>
-                <p className="w-[80px]">{user.firstName}</p>
-                <p>{user.contact}</p>
+                <p className="w-[80px]">{product.productName}</p>
               </CommandItem>
             ))
           ) : (
@@ -72,4 +64,4 @@ const CustomerCommandBox = ({ setOpen, setSelected }) => {
   );
 };
 
-export default CustomerCommandBox;
+export default ProductCommandBox;

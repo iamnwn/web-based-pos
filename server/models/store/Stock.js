@@ -6,7 +6,7 @@ module.exports = async (tableName) => {
   const Stock = sequelize.define(tableName, {
     batch: {
       type: DataTypes.STRING(30),
-      allowNull: false,
+      allowNull: true,
     },
     barcode: {
       type: DataTypes.STRING(30),

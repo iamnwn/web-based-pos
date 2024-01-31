@@ -123,7 +123,7 @@ const UserForm = ({ values }) => {
         });
     } else {
       axiosPrivate
-        .put(`${CUSTOMER_URL}`, data)
+        .post(`${CUSTOMER_URL}`, data)
         .then((response: AxiosResponse) => {
           toast({
             variant: "success",
