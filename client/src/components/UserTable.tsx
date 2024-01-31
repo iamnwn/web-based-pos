@@ -161,6 +161,7 @@ export const columns: ColumnDef<User>[] = [
   },
   {
     accessorKey: "StoreId",
+    enableHiding: true,
   },
   {
     accessorKey: "id",

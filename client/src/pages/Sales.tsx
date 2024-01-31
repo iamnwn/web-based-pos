@@ -1,6 +1,9 @@
 import SalesTable from "@/components/SalesTable";
 import SalesInvoice from "@/components/SalesInvoice";
 import { useState } from "react";
+import CustomerComBox from "@/components/CustomerCombox";
+import { Label } from "@/components/ui/label";
+import { InvoiceProvider } from "@/contexts/InvoiceProvider";
 
 const Sales = () => {
   const [customer, setCustomer] = useState({
@@ -8,20 +11,23 @@ const Sales = () => {
     firstName: "",
   });
 
-  const [invoice, setInvoice] = useState({
-    StockId: "",
-    quantity: "",
-    discount: "",
-    subTotal: "",
-  });
-
   return (
-    <div className="m-5 flex">
-      <SalesTable></SalesTable>
-      <div className="ml-5">
-        <SalesInvoice></SalesInvoice>
+    <InvoiceProvider>
+      <div className="m-5 flex">
+        <div>
+          <div className="flex flex-col">
+            <Label htmlFor="customer" className="mb-3">
+              Select Customer : {customer ? customer.firstName : null}
+            </Label>
+            <CustomerComBox setCustomer={setCustomer} />
+          </div>
+          <SalesTable></SalesTable>
+        </div>
+        <div className="ml-5">
+          <SalesInvoice></SalesInvoice>
+        </div>
       </div>
-    </div>
+    </InvoiceProvider>
   );
 };
 

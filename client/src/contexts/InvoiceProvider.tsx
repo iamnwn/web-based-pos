@@ -1,56 +1,63 @@
+import useLocalStorage from "@/hooks/useLocalStorage";
 import { createContext, ReactNode, useContext, useState } from "react";
-
-import { useLocalStorage } from "../hooks/useLocalStorage";
 
 type ShoppingCartProviderProps = {
   children: ReactNode;
 };
 
-type CartItem = {
-  id: number;
+type InvoiceItem = {
+  unitPrice: number;
+  StockId: number;
   quantity: number;
+  discount: number;
+  subTotal: number;
+  ProductId: number;
 };
 
-type ShoppingCartContext = {
-  openCart: () => void;
-  closeCart: () => void;
-  getItemQuantity: (id: number) => number;
-  increaseCartQuantity: (id: number) => void;
-  decreaseCartQuantity: (id: number) => void;
-  removeFromCart: (id: number) => void;
-  cartQuantity: number;
-  cartItems: CartItem[];
+type InvoiceContext = {
+  getItemQuantity: (StockId: number) => number;
+  increaseInvoiceQuantity: (StockId: number) => void;
+  decreaseInvoiceQuantity: (StockId: number) => void;
+  removeFromInvoice: (StockId: number) => void;
+  getTotalInvoiceAmount: () => number;
+  invoiceQuantity: number;
+  invoiceItems: InvoiceItems[];
 };
 
-const ShoppingCartContext = createContext({} as ShoppingCartContext);
+export const InvoiceContext = createContext({} as InvoiceContext);
 
-export function useShoppingCart() {
-  return useContext(ShoppingCartContext);
-}
-export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [cartItems, setCartItems] = useLocalStorage<CartItem[]>(
-    "shopping-cart",
+export function InvoiceProvider({ children }: ShoppingCartProviderProps) {
+  const [invoiceItems, setInvoiceItems] = useLocalStorage<InvoiceItems[]>(
+    "invoice-item",
     []
   );
 
-  const cartQuantity = cartItems.reduce(
+  const getTotalInvoiceAmount = () => {
+    const totalAmount = invoiceItems.reduce((acc, item) => {
+      const amount =
+        item.unitPrice * item.quantity -
+        (item.unitPrice * item.quantity * item.discount) / 100;
+      return acc + amount;
+    }, 0);
+
+    return totalAmount;
+  };
+
+  const invoiceQuantity = invoiceItems.reduce(
     (quantity, item) => item.quantity + quantity,
     0
   );
 
-  const openCart = () => setIsOpen(true);
-  const closeCart = () => setIsOpen(false);
-  function getItemQuantity(id: number) {
-    return cartItems.find((item) => item.id === id)?.quantity || 0;
+  function getItemQuantity(StockId: number) {
+    return invoiceItems.find((item) => item.StockId === StockId)?.quantity || 0;
   }
-  function increaseCartQuantity(id: number) {
-    setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id) == null) {
-        return [...currItems, { id, quantity: 1 }];
+  function increaseInvoiceQuantity(StockId: number) {
+    setInvoiceItems((currItems) => {
+      if (currItems.find((item) => item.StockId === StockId) == null) {
+        return [...currItems, { StockId, quantity: 1 }];
       } else {
         return currItems.map((item) => {
-          if (item.id === id) {
+          if (item.StockId === StockId) {
             return { ...item, quantity: item.quantity + 1 };
           } else {
             return item;
@@ -59,13 +66,13 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }
     });
   }
-  function decreaseCartQuantity(id: number) {
-    setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id)?.quantity === 1) {
-        return currItems.filter((item) => item.id !== id);
+  function decreaseInvoiceQuantity(StockId: number) {
+    setInvoiceItems((currItems) => {
+      if (currItems.find((item) => item.StockId === StockId)?.quantity === 1) {
+        return currItems.filter((item) => item.StockId !== StockId);
       } else {
         return currItems.map((item) => {
-          if (item.id === id) {
+          if (item.StockId === StockId) {
             return { ...item, quantity: item.quantity - 1 };
           } else {
             return item;
@@ -74,26 +81,24 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }
     });
   }
-  function removeFromCart(id: number) {
-    setCartItems((currItems) => {
-      return currItems.filter((item) => item.id !== id);
+  function removeFromInvoice(StockId: number) {
+    setInvoiceItems((currItems) => {
+      return currItems.filter((item) => item.StockId !== StockId);
     });
   }
 
   return (
-    <ShoppingCartContext.Provider
+    <InvoiceContext.Provider
       value={{
         getItemQuantity,
-        increaseCartQuantity,
-        decreaseCartQuantity,
-        removeFromCart,
-        openCart,
-        closeCart,
-        cartItems,
-        cartQuantity,
+        increaseInvoiceQuantity,
+        decreaseInvoiceQuantity,
+        removeFromInvoice,
+        invoiceQuantity,
+        invoiceItems,
+        getTotalInvoiceAmount,
       }}>
       {children}
-      <ShoppingCart isOpen={isOpen} />
-    </ShoppingCartContext.Provider>
+    </InvoiceContext.Provider>
   );
 }

@@ -4,3 +4,4 @@ server/config/config.json
 server/.env
 client/.env
 .env
+.vscode

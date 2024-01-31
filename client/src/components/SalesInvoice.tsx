@@ -117,30 +117,25 @@ const SalesInvoice = () => {
 
           <ScrollArea className="h-[400px]">
             <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} width={"130px"} height={"20px"}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center">
-                    No users
-                  </TableCell>
-                </TableRow>
-              )}
+              {table.getRowModel().rows?.length
+                ? table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell
+                          key={cell.id}
+                          width={"130px"}
+                          height={"20px"}>
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                : null}
             </TableBody>
           </ScrollArea>
         </Table>
