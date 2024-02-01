@@ -52,7 +52,9 @@ const SubmitInvoice = ({ customer, setCustomer }) => {
           });
           clear();
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       toast({
         variant: "destructive",

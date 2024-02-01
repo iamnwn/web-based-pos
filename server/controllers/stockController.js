@@ -11,27 +11,18 @@ const { Op, where } = require("sequelize");
 const createStock = async (req, res) => {
   // console.log(req.StoreId);
   const stocks = req.StoreId;
-  // console.log(req.body);
+  console.log(req.body);
   const stock = await Stock(stocks);
   // console.log(stock);
 
-  const result = await stock.create(req.body);
-  // console.log(result);
-
-  result.then((result) => {
-    result
-      .then(async (e) => {
-        console.log(e.dataValues.id);
-        await Stock(e.dataValues.id).then(() => {
-          res.status(201).json({ message: "Store created !" });
-        });
-      })
-      .catch(async (err) => {
-        await db.Store.destroy({ where: { id: id } });
-        console.log(err);
-        res.status(400).json({ error: "Store created Failed !" });
-      });
-  });
+  await stock
+    .create(req.body)
+    .then((result) => {
+      res.status(201).json({ message: "Stock created !" });
+    })
+    .catch(async (err) => {
+      console.log(err);
+    });
 };
 
 const getStockData = async (req, res) => {

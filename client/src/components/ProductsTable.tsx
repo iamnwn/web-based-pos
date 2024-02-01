@@ -135,7 +135,7 @@ const ProductTable = () => {
   return (
     <div className="w-full">
       <div className="grid gap-5 items-center py-4">
-        <h1 className="text-2xl font-semibold">All users</h1>
+        <h1 className="text-2xl font-semibold">All Products</h1>
         <Input
           placeholder="Filter product..."
           value={

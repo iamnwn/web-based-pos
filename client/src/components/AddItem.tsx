@@ -20,7 +20,7 @@ const AddItem = ({ items }) => {
     const unitPrice = items.getValue("unitPrice");
     const total =
       invoiceData.quantity * unitPrice -
-      (invoiceData.quantity * unitPrice * invoiceData.discount) / 100;
+      (invoiceData.quantity * unitPrice * parseInt(invoiceData.discount)) / 100;
     setInvoiceData((Data) => ({
       ...Data,
       subTotal: total,
@@ -37,6 +37,7 @@ const AddItem = ({ items }) => {
 
   return (
     <div className="grid grid-flow-row gap-3">
+      <Label className="text-white">Quantity</Label>
       <Input
         className="text-white"
         placeholder="quantity"
@@ -48,6 +49,7 @@ const AddItem = ({ items }) => {
           }))
         }
       />
+      <Label className="text-white">Discount</Label>
       <Input
         className="text-white"
         placeholder="discount"

@@ -78,6 +78,7 @@ const createInvoice = async (req, res) => {
   const stocks = req.StoreId;
   const userName = req.userName;
 
+  console.log(req.body);
   // const stock = await Stock(stocks);
 
   try {
@@ -104,7 +105,7 @@ const createInvoice = async (req, res) => {
       line.InvoiceId = invoiceId;
     });
 
-    const linesRec = await db.InvoiceLines.bulkCreate(lines);
+    await db.InvoiceLines.bulkCreate(lines);
 
     res.status(200).json({ message: "Success !" });
   } catch (error) {

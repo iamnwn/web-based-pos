@@ -141,7 +141,7 @@ const StockForm = ({ values }) => {
           {!values ? (
             <>
               <div className="flex flex-col space-y-2 ">
-                <Label htmlFor="customer">Product</Label>
+                <Label htmlFor="product">Product</Label>
                 <ProductComBox setProduct={setProduct} />
                 <p className="text-destructive text-xs">
                   {errors.ProductId?.message}
@@ -171,41 +171,41 @@ const StockForm = ({ values }) => {
           </div>
           <div className="flex flex-col space-y-2">
             <Label htmlFor="quantityInStock">Qty</Label>
-            <Input {...register("quantityInStock")} placeholder="Province" />
+            <Input {...register("quantityInStock")} placeholder="Quantity" />
             <p className="text-destructive text-xs">
               {errors.quantityInStock?.message}
             </p>
           </div>
           <div className="flex flex-col space-y-2">
             <Label htmlFor="boughtPrice">Bought price</Label>
-            <Input {...register("boughtPrice")} placeholder="District" />
+            <Input {...register("boughtPrice")} placeholder="Price" />
             <p className="text-destructive text-xs">
               {errors.boughtPrice?.message}
             </p>
           </div>
           <div className="flex flex-col space-y-2">
             <Label htmlFor="unitPrice">Unit price</Label>
-            <Input {...register("unitPrice")} placeholder="123456" />
+            <Input {...register("unitPrice")} placeholder="Price" />
             <p className="text-destructive text-xs">
               {errors.unitPrice?.message}
             </p>
           </div>
           <div className="flex flex-col space-y-2">
             <Label htmlFor="maxDiscount">Max discount</Label>
-            <Input {...register("maxDiscount")} placeholder="123456" />
+            <Input {...register("maxDiscount")} placeholder="100%" />
             <p className="text-destructive text-xs">
               {errors.maxDiscount?.message}
             </p>
           </div>
           <div className="flex flex-col space-y-2">
             <Label htmlFor="defaultDiscount">Default discount</Label>
-            <Input {...register("defaultDiscount")} placeholder="123456" />
+            <Input {...register("defaultDiscount")} placeholder="100%" />
             <p className="text-destructive text-xs">
               {errors.defaultDiscount?.message}
             </p>
           </div>
           <div className="flex flex-col space-y-2">
-            <Label htmlFor="userRole">Is active</Label>
+            <Label htmlFor="userRole">Is available</Label>
             <Select onValueChange={(e) => setValue("available", e)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select" />
