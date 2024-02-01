@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   const Invoice = sequelize.define("Invoice", {
-    total_amount: {
+    totalAmount: {
       type: DataTypes.FLOAT,
     },
     createAT: {

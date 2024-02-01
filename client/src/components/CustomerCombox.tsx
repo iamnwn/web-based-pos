@@ -22,9 +22,7 @@ const CustomerComBox = ({ setCustomer }) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button className="w-[160px] justify-center text-white">
-          {selected ? <>Selected</> : <>Select</>}
-        </Button>
+        <Button className="w-[160px] justify-center text-white">Select</Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <CustomerCommandBox setOpen={setOpen} setSelected={setSelected} />

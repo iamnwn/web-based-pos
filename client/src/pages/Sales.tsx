@@ -26,7 +26,11 @@ const Sales = () => {
         </div>
         <div className="ml-5">
           <SalesInvoice></SalesInvoice>
-          <SubmitInvoice></SubmitInvoice>
+          <div className="mt-5">
+            <SubmitInvoice
+              customer={customer}
+              setCustomer={setCustomer}></SubmitInvoice>
+          </div>
         </div>
       </div>
     </InvoiceProvider>

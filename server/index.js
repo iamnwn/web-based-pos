@@ -36,7 +36,7 @@ app.use("/api/stores", require("./routes/api/stroe"));
 app.use("/api/productcategory", require("./routes/api/productCategory"));
 app.use("/api/product", require("./routes/api/product"));
 app.use("/api/stock", require("./routes/api/stock"));
-// app.use("/api/invoice", require("./routes/api/invoice"));
+app.use("/api/invoice", require("./routes/api/invoice"));
 
 db.sequelize.sync().then((res) => {
   app.listen(3000, () => {});

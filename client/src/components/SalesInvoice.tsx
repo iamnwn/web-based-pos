@@ -28,15 +28,17 @@ import {
 import StoreForm from "./StoresForm";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useInvoice from "@/hooks/useInvoice";
+import RemoveItem from "./RemoveItem";
 
-export type User = {
-  storeName: string;
-  storeLocation: string;
-  firstName: string;
+export type Invoice = {
+  productName: string;
+  quantity: number;
+  discount: number;
 };
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Invoice>[] = [
   {
     accessorKey: "productName",
     header: "Product Name",
@@ -48,7 +50,9 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "quantity",
     header: "QTY",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("qty")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("quantity")}</div>
+    ),
   },
   {
     accessorKey: "discount",
@@ -57,29 +61,44 @@ export const columns: ColumnDef<User>[] = [
       <div className="capitalize">{row.getValue("discount")}</div>
     ),
   },
-
+  {
+    accessorKey: "subTotal",
+    header: "Subtotal",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("subTotal")}</div>
+    ),
+  },
   {
     accessorKey: "StockId",
-    header: "Actions",
+    header: "Action",
     cell: ({ row }) => (
-      <Popover>
-        <PopoverTrigger asChild className="w-[100px]">
-          <Button className="outline outline-gray-500 outline-[1px]">
-            Add
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          align={"end"}
-          className="w-auto outline-gray-500 outline-[1px] ">
-          <StoreForm values={row} />
-        </PopoverContent>
-      </Popover>
+      <>
+        <Popover>
+          <PopoverTrigger asChild className="w-[100px]">
+            <Button className="outline bg-red-500 outline-gray-500 outline-[1px] text-xl w-[px]">
+              X
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align={"end"}
+            className="w-auto outline-gray-500 outline-[1px] ">
+            <RemoveItem id={row.getValue("StockId")} />
+          </PopoverContent>
+        </Popover>
+      </>
     ),
   },
 ];
 
 const SalesInvoice = () => {
+  const { invoiceItems } = useInvoice();
   const [data, setData] = useState({});
+
+  useEffect(() => {
+    console.log(invoiceItems);
+    console.log();
+    setData(invoiceItems);
+  }, [invoiceItems]);
 
   const table = useReactTable({
     data,
@@ -92,9 +111,8 @@ const SalesInvoice = () => {
   });
 
   return (
-    <div className="w-[350px] ">
-      <div className="grid gap-5 items-center py-4"></div>
-      <div className="rounded-sm border w-auto">
+    <div className="rounded-sm border text-center">
+      <ScrollArea className="h-[450px] w-[350px]">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -115,34 +133,21 @@ const SalesInvoice = () => {
             ))}
           </TableHeader>
 
-          <ScrollArea className="h-[400px]">
-            <TableBody>
-              {table.getRowModel().rows?.length
-                ? table.getRowModel().rows.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && "selected"}>
-                      {row.getVisibleCells().map((cell) => (
-                        <TableCell
-                          key={cell.id}
-                          width={"130px"}
-                          height={"20px"}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                : null}
-            </TableBody>
-          </ScrollArea>
+          <TableBody className="text-center">
+            {table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id} width={"130px"} height={"20px"}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground"></div>
-      </div>
+      </ScrollArea>
     </div>
   );
 };

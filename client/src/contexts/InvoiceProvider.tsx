@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useState } from "react";
 
-type ShoppingCartProviderProps = {
+type InvoiceProviderProps = {
   children: ReactNode;
 };
 
@@ -14,85 +14,90 @@ type InvoiceItem = {
 };
 
 type InvoiceContext = {
-  getItemQuantity: (StockId: number) => number;
-  increaseInvoiceQuantity: (StockId: number) => void;
-  decreaseInvoiceQuantity: (StockId: number) => void;
-  removeFromInvoice: (StockId: number) => void;
-  getTotalInvoiceAmount: () => number;
+  increaseInvoiceQuantity: (data) => void;
   invoiceQuantity: number;
+  invoiceAmount: number;
+  clearInvoice: () => void;
+  decreaseInvoiceQuantity: (id) => void;
   invoiceItems: InvoiceItem[];
 };
 
 export const InvoiceContext = createContext({} as InvoiceContext);
 
-export function InvoiceProvider({ children }: ShoppingCartProviderProps) {
-  const [invoiceItems, setInvoiceItems] = useState({});
+export function InvoiceProvider({ children }: InvoiceProviderProps) {
+  const [invoiceItems, setInvoiceItems] = useState([]);
 
-  const getTotalInvoiceAmount = () => {
-    const totalAmount = invoiceItems.reduce((acc, item) => {
-      const amount =
-        item.unitPrice * item.quantity -
-        (item.unitPrice * item.quantity * item.discount) / 100;
-      return acc + amount;
-    }, 0);
+  // const getTotalInvoiceAmount = () => {
+  //   const totalAmount = invoiceItems.reduce((acc, item) => {
+  //     const amount =
+  //       item.unitPrice * item.quantity -
+  //       (item.unitPrice * item.quantity * item.discount) / 100;
+  //     return acc + amount;
+  //   }, 0);
 
-    return totalAmount;
-  };
+  //   return totalAmount;
+  // };
+
+  function clearInvoice() {
+    setInvoiceItems((invoiceItems) => []);
+  }
+
+  function decreaseInvoiceQuantity(id) {
+    setInvoiceItems(invoiceItems.filter((item) => item.StockId !== id));
+  }
 
   const invoiceQuantity = invoiceItems.reduce(
     (quantity, item) => item.quantity + quantity,
     0
   );
+  const invoiceAmount = invoiceItems.reduce(
+    (quantity, item) => item.subTotal + quantity,
+    0
+  );
 
-  function getItemQuantity(StockId: number) {
-    return invoiceItems.find((item) => item.StockId === StockId)?.quantity || 0;
+  // function getItemQuantity(StockId: number) {
+  //   return invoiceItems.find((item) => item.StockId === StockId)?.quantity || 0;
+  // }
+  function increaseInvoiceQuantity(data) {
+    setInvoiceItems(() => [...invoiceItems, data]);
   }
-  function increaseInvoiceQuantity(StockId: number) {
-    setInvoiceItems((currItems) => {
-      if (currItems.find((item) => item.StockId === StockId) == null) {
-        return [...currItems, { StockId, quantity: 1 }];
-      } else {
-        return currItems.map((item) => {
-          if (item.StockId === StockId) {
-            return { ...item, quantity: item.quantity + 1 };
-          } else {
-            return item;
-          }
-        });
-      }
-    });
-  }
-  function decreaseInvoiceQuantity(StockId: number) {
-    setInvoiceItems((currItems) => {
-      if (currItems.find((item) => item.StockId === StockId)?.quantity === 1) {
-        return currItems.filter((item) => item.StockId !== StockId);
-      } else {
-        return currItems.map((item) => {
-          if (item.StockId === StockId) {
-            return { ...item, quantity: item.quantity - 1 };
-          } else {
-            return item;
-          }
-        });
-      }
-    });
-  }
-  function removeFromInvoice(StockId: number) {
-    setInvoiceItems((currItems) => {
-      return currItems.filter((item) => item.StockId !== StockId);
-    });
-  }
+  // function decreaseInvoiceQuantity(data) {
+  //   setInvoiceItems((invoiceItems) => {
+  //     if (
+  //       invoiceItems.find((item) => item.StockId === data.StockId)?.quantity ===
+  //       1
+  //     ) {
+  //       return invoiceItems.filter((item) => item.StockId !== data.StockId);
+  //     } else {
+  //       return invoiceItems.map((item) => {
+  //         if (item.StockId === data.StockId) {
+  //           return { ...item, quantity: item.quantity - 1 };
+  //         } else {
+  //           return item;
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+  // function removeFromInvoice(StockId: number) {
+  //   setInvoiceItems((invoiceItems) => {
+  //     return invoiceItems.filter((item) => item.StockId !== StockId);
+  //   });
+  // }
 
   return (
     <InvoiceContext.Provider
       value={{
-        getItemQuantity,
+        // getItemQuantity,
         increaseInvoiceQuantity,
         decreaseInvoiceQuantity,
-        removeFromInvoice,
+        clearInvoice,
+        // decreaseInvoiceQuantity,
+        // removeFromInvoice,
+        invoiceAmount,
         invoiceQuantity,
         invoiceItems,
-        getTotalInvoiceAmount,
+        // getTotalInvoiceAmount,
       }}>
       {children}
     </InvoiceContext.Provider>

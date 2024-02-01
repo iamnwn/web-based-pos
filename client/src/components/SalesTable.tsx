@@ -1,12 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 "use client";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-
 import * as React from "react";
 import {
   ColumnDef,
@@ -18,6 +12,7 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverTrigger, PopoverContent } from "./ui/popover";
 
 import { Input } from "@/components/ui/input";
 import {
@@ -29,7 +24,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import useInvoice from "@/hooks/useInvoice";
+import AddItem from "./AddItem";
+
 export type User = {
   storeName: string;
   storeLocation: string;
@@ -96,23 +92,31 @@ export const columns: ColumnDef<User>[] = [
       </div>
     ),
   },
+  { accessorKey: "ProductId" },
 
   {
     accessorKey: "id",
-    header: "Actions",
+    header: "Action",
     cell: ({ row }) => (
-      <Button
-        onClick={increase}
-        className="outline outline-gray-500 outline-[1px]">
-        Add
-      </Button>
+      <>
+        <Popover>
+          <PopoverTrigger asChild className="w-[100px]">
+            <Button className="outline outline-gray-500 outline-[1px]">
+              Add
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align={"end"}
+            className="w-auto outline-gray-500 outline-[1px] ">
+            <AddItem items={row} />
+          </PopoverContent>
+        </Popover>
+      </>
     ),
   },
 ];
 
 const SalesTable = () => {
-  const { increaseInvoiceQuantity } = useInvoice();
-
   const axiosPrivate = useAxiosPrivate();
   const STOCK_URL = "/api/stock";
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -133,6 +137,11 @@ const SalesTable = () => {
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       columnFilters,
+    },
+    initialState: {
+      columnVisibility: {
+        ProductId: false,
+      },
     },
   });
 

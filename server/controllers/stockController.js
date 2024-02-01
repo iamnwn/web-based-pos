@@ -55,6 +55,7 @@ const getStockData = async (req, res) => {
         "maxDiscount",
         "defaultDiscount",
         "available",
+        "ProductId",
 
         "Product.productName",
       ],
