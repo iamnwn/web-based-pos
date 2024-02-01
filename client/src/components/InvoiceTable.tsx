@@ -1,11 +1,4 @@
 /* eslint-disable react-refresh/only-export-components */
-"use client";
-
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import * as React from "react";
 import {
@@ -29,7 +22,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import useAxiosPrivate from "@/hooks/useAxiosPrivate";
-import ProductForm from "./ProductForm";
 
 export type Product = {
   productName: string;
@@ -37,54 +29,46 @@ export type Product = {
   categoryName: string;
 };
 
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: "productName",
-    header: "Product name",
+    accessorKey: "firstName",
+    header: "Customer name",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productName")}</div>
+      <div className="capitalize">{row.getValue("firstName")}</div>
     ),
   },
   {
-    accessorKey: "productDetails",
-    header: "Product details",
+    accessorKey: "totalAmount",
+    header: "Total Amount",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("productDetails")}</div>
+      <div className="capitalize">{row.getValue("totalAmount")} LKR</div>
     ),
   },
   {
-    accessorKey: "categoryName",
-    header: "Category",
+    accessorKey: "UserName",
+    header: "Salesmen",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("categoryName")}</div>
+      <div className="capitalize">{row.getValue("UserName")}</div>
     ),
-  },
-
-  {
-    accessorKey: "ProductsCategoryId",
   },
   {
     accessorKey: "id",
-    header: "Actions",
+    header: "Invoice Id",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("id")}</div>,
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Date",
     cell: ({ row }) => (
-      <Popover>
-        <PopoverTrigger asChild className="w-[100px]">
-          <Button className="outline outline-gray-500 outline-[1px]">
-            Update
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent
-          align={"end"}
-          className="w-auto outline-gray-500 outline-[1px] ">
-          <ProductForm values={row} />
-        </PopoverContent>
-      </Popover>
+      <div className="capitalize">
+        {new Date(row.getValue("createdAt")).toLocaleDateString()}
+      </div>
     ),
   },
 ];
 
-const ProductTable = () => {
-  const PRODUCT_URL = "/api/product";
+const InvoiceTable = () => {
+  const INVOICE_URL = "/api/invoice";
   const axiosPrivate = useAxiosPrivate();
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -114,7 +98,7 @@ const ProductTable = () => {
   const fetchData = (pageIndex: number, pageSize: number, filter: string) => {
     axiosPrivate
       .get(
-        `${PRODUCT_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
+        `${INVOICE_URL}/data?pageIndex=${pageIndex}&pageSize=${pageSize}&filter=${
           !filter ? "" : filter
         }`
       )
@@ -135,14 +119,13 @@ const ProductTable = () => {
   return (
     <div className="w-full">
       <div className="grid gap-5 items-center py-4">
-        <h1 className="text-2xl font-semibold">All users</h1>
+        <h1 className="text-2xl font-semibold">All Invoices</h1>
         <Input
-          placeholder="Filter product..."
-          value={
-            (table.getColumn("productName")?.getFilterValue() as string) ?? ""
-          }
+          placeholder="Filter invoice..."
+          type="number"
+          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
           onChange={(event) => {
-            table.getColumn("productName")?.setFilterValue(event.target.value);
+            table.getColumn("id")?.setFilterValue(event.target.value);
             setPageIndex(0);
           }}
           className="w-[250px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
@@ -219,4 +202,4 @@ const ProductTable = () => {
   );
 };
 
-export default ProductTable;
+export default InvoiceTable;
